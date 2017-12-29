@@ -1,0 +1,198 @@
+=== 三级标题
+==== 四级标题
+===== 五级标题
+====== 六级标题
+== 段落使用
+这里是一个段落
+
+又开始一个段落中间要空行才可以
+
+段落连着写如果想换行,那么在段落后面添加空格和加号, +
+那么就是两段话了,否则不会自动换行
+
+段落还可以嵌套,这是一个普通段落
+
+  这是嵌套的段落,
+
+  这也是嵌套的段落,这两个嵌套的段落前都有一个空格
+
+这又是另外的段落
+
+== 警告语法
+
+[[bookmark-bb]]这是一个锚点
+asciidoc可以提供显眼的警告信息,并提供不同的显示,例如:
+
+NOTE: 这是一个警告,NOTE后面加:和 空格
+
+还有其它形式的,例如:
+
+TIP: 这是一个灯泡形式警告
+
+IMPORTANT: 这是!形式的警告
+
+WARNING: 小心注意
+
+CAUTION: 确保注意事项,前提条件
+
+[.lead]
+这是一个领导段落,字体大小和普通段落不一样
+
+== 字体使用
+*粗体*
+
+_斜体_
+
+`带背景色字体`
+
+`*粗体嵌套*_斜体嵌套_还有其他形式*_加粗斜体嵌套_*`
+
+#两个号中间字体会被高亮显示#
+
+[.small]#这种形式,字体会被缩小#
+
+[.underline]#这种形式,文字被添加下划线#
+
+[.line-through]#这种形式,文字被添加删除线#
+
+[.line-through]#nihaoma#
+
+
+
+"`如果需要使用双引号,需要用括字符把字体先括起来`"
+
+'`单引号的使用也是一样的`'
+
+== just a demo
+
+
+== 文档定义
+
+Doc Write
+
+:toc:
+:homepage: http://www.baidu.com
+
+== 列表使用
+
+'''
+这是分割线
+
+<<<
+这是分页线
+
+.lists
+
+* list1
+* list2
+* list3
+** list4
+*** list5
+**** list6
+
+或者是
+
+- list1
+- list1
+- list1
+- list1
+
+
+.有序列表
+
+. 第一点
+.. 问题
+.. 描述
+. 第二点
+
+== 链接
+
+link:http://www.baidu.com.cn[百度一下]
+
+== 锚点
+
+[[bookmark-aa]]这是一个锚点
+
+访问 <<bb>> 学习更多
+
+查看 <<just a demo>>
+
+== image
+
+image::http://asciidoctor.org/images/octocat.jpg[GitHub mascot]
+
+image::E:\\gitlab\aa.png[本地图片]
+
+== source code
+
+行内的使用括字符就可以了`this is demo source code`
+
+定义一整段的话 可以使用连续4个点号,例如
+....
+DEMO:
+这是代码
+你说呢
+....
+
+也可以指定#source code#的是哪种语言,例如:
+
+.C source code
+[source,c]
+----
+if(a > b)
+  printf("hello world !\n");
+else
+{
+  printf("hello girl!\n");
+  return 0;
+}
+----
+
+.bash shell
+`_indent=4_`表示代码要缩进4格
+[source,shell,indent=4]
+----
+PATH=$PATH:/usr/local/ruby/bin
+if [ -d /var/log ]
+then
+  echo "this is dir!"
+else
+  echo "this is not dir!"
+if
+----
+
+== 另外的整段的写法
+
+用连续4个*号,表示一个段落,然后标题居中显示
+
+.居中标题
+****
+  这里面可以协商标题的内容,这里可以写注意事项等等,当然这里也可以使用列表
+这里面貌似只能使用文字,不能再使用标题之类的东西了
+
+.A list
+- 1
+- 2
+****
+
+还有一种方法
+
+.多种用法
+====
+这里显示效果跟上面的就不一样了
+哈哈哈 为什么多了个Example 1 就不知道了
+====
+
+你也可以嵌套在#NOTE#中,例如:
+
+[NOTE]
+====
+这里是注意事项:
+
+.A list
+. 第一点....
+. 第一点....
+. 第一点....
+. 第一点....
+
+====
