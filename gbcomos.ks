@@ -1,62 +1,3 @@
-== Custom LiveCD
-
-看本文之前，你可以先看这里link:http://www.livecd.ethz.ch/build.html[Create your own LiveCD],如果你看懂了，
-那么就不需要在往下看了，相信你已经知道怎么定制自己的LiveCD了.
-
-本文给出的制作LiveCD的方法是：通过自定义 `Kickstart` 脚本，利用 *livecd-tools* 工具来制作.对于 `Kickstart` 脚本
-语法有什么疑问，可以先看这里：link:http://fedoraproject.org/wiki/Anaconda/Kickstart[Kickstart语法说明]
-
-=== 快速开始
-
-.实验平台
-* CentOS 7
-* 依赖工具,svn/livecd-tools
-
-.step1
-[source,shell]
-----
-yum install -y svn livecd-tools
-----
-
-.step2
-[source,shell]
-----
-cd ~
-mkdir livecd
-svn co https://svn.iac.ethz.ch/pub/livecd/trunk/SL7/livecd-config livecd-config-SL7    # SL7 ks files
-LANG livecd-creator --config=~/livecd/livecd-config-SL7/sl75-livedvd.ks --fslabel=YourLiveCD_LABLE
-----
-
-通过以上步骤，你已经创建了一个livecd,因为要下载很多的packages，所以制作过程会很慢。你可以通过下载 *everything* ISO挂载
-在本地，然后修改ks文件中的源的方式来提高制作速度.link:http://ftp.scientificlinux.org/linux/scientific/7.5/x86_64/iso/[ISO下载地址]
-
-=== 制作过程中遇到的问题
-
-. link:https://www.centos.org/forums/viewtopic.php?t=64858[Missing EFI file (/boot/efi/EFI/*/gcdx64.efi)]
-. link:https://bugzilla.redhat.com/show_bug.cgi?id=1385847[ERROR:program:mount: unknown filesystem type 'hfsplus']
-* 这个问题是因为，加入了EFI相关的包导致，一般情况我们不需要创建EFI引导，所以把EFI相关的包去掉就可以了
-
-=== 说明
-
-.livecd-creator
-** --config   指定kickstart配置文件
-** --fslabel  指定制作的livecd的label，同时制作好的livecd的文件名称也是这个
-
-.kickstart 文件
-- *%packages*
-
-  @base 表示这是一组包，至于你repo中有哪些组可以使用，那么你可以查看，在repo路径下的repodata/*.xml文件来查看，这个文件
-  详细说明了有哪些组可以使用，还有组中都包括了哪些package！
-
-制作livecd的关键，在于那个Kickstart脚本文件，理解这个文件至关重要。只要了解了此文件各部分内容，则可随心所欲定制自己的系统
-
-这里我还找到了一个网上的例子，讲的也很清楚大家参考：link:https://www.cnblogs.com/f-ck-need-u/archive/2017/08/10/7342022.html[kickstart文件详解]
-下面附上我的ks文件以及释义：
-
-.my_livecd.ks
-[source,shell]
-----
-
 
 lang en_US.UTF-8
 text
@@ -66,7 +7,7 @@ auth --useshadow --passalgo=sha512
 selinux --enforcing
 firewall --enabled --service=mdns,ssh
 part / --size 10240 --fstype ext4
-services --enabled=NetworkManager,network,sshd
+services --enabled=NetworkManager,network,sshd 
 
 
 # Root password
@@ -74,7 +15,7 @@ services --enabled=NetworkManager,network,sshd
 rootpw --iscrypted $6$2py2ESAK$/KECiX4egJ1ihCsuiaeGi27FtHqavum5A/PfGFqD.7Lu6ZfUBk24LtKmn9jfpjjej0QswR.N5Qa0tAU9U.tgz/
 
 # Workaround for the grubby issue on live media (see https://bugzilla.redhat.com/show_bug.cgi?id=1153410)
-# SL repositories (fastbugs enabled per default)
+# SL repositories (fastbugs enabled per default) 
 #repo --name=base      --baseurl=http://ftp.scientificlinux.org/linux/scientific/7.5/$basearch/os/               --excludepkgs=grubby
 #repo --name=security  --baseurl=http://ftp.scientificlinux.org/linux/scientific/7.5/$basearch/updates/security/ --excludepkgs=grubby
 #repo --name=fastbugs  --baseurl=http://ftp.scientificlinux.org/linux/scientific/7.5/$basearch/updates/fastbugs/ --excludepkgs=grubby
@@ -180,12 +121,12 @@ then
 		usermod -aG root "\$username" > /dev/null
 		echo -e "\nif [ -e /run/initramfs/isoscan/scripts/starter ]; then\n\t. /run/initramfs/isoscan/scripts/starter\nfi" >> /home/"\$username"/.bashrc
 	done
-else
+else		
 		action "Adding Factory user" useradd -u 0 -o -g 0 -G root factory
 		passwd -d factory > /dev/null
 		usermod -aG root factory > /dev/null
 		echo -e "\nif [ -e /run/initramfs/isoscan/scripts/starter ]; then\n\t. /run/initramfs/isoscan/scripts/starter\nfi" >> /home/factory/.bashrc
-
+		
 		action "Adding mksystem user" useradd -u 0 -o -g 0 -G root mksystem
 		passwd -d mksystem > /dev/null
 		usermod -aG root mksystem > /dev/null
@@ -262,6 +203,3 @@ rm -f /usr/lib64/firefox/langpacks/*
 # rebuild schema cache with any overrides we installed
 # glib-compile-schemas /usr/share/glib-2.0/schemas
 %end
-
-%end
-----
